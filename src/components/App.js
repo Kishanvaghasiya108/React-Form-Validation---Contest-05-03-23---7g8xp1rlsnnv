@@ -12,55 +12,46 @@ function App() {
  /**
   * code here
   */
- const [name,setName] = useState('');
- const [email,setEmail] = useState('');
- const [emailError,setEmailError] = useState(false);
+ const fnameRef = useRef();
+ const emailRef = useRef();
+ const [Error,setError] = useState(undefined);
+ const [data,setData] = useState({fname:undefined,lname:undefined});
 
- const handleNameChange = (event) =>{
-  setName(event.target.value);
- };
+const change = () =>{
+  console.log(emailRef.current.value);
+  if(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-za-z]+$/.test(emailRef.current.value)){
+    setError(undefined);
 
- const handleEmailChange = (event) =>{
-  setEmail(event.target.value);
- };
-
- const handleSubmit = (event) =>{
-  event.preventDefault();
-
-  if(emailError){
-    console.log("please fix the error in the form");
+  document.getElementById("submit").disabled = false;
   }
   else{
-    console.log("form submitted successfully");
+    setError("Email is invalid");
+    document.getElementById("submit").disabled = true;
   }
- };
-
-const validateEmail = () =>{
-  const emailRegex = /^[^\s@]+@[^s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-const handleBlur = ()=>{
-  setEmailError(!validateEmail(email));
 };
 
   return(
     <div className="App">
       <h1>How About Them Apples</h1>
-      <form>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        setData({
+          fname:fnameRef.current.value,
+          lname:emailRef.current.value });
+      }}>
         <fieldset>
           <label>
             <p>First Name</p>
-            <input id='fname' name="name" value={name} onChange={handleNameChange} ref={fnameRef}/>
+            <input id='fname' name="name" ref={fnameRef}/>
             <br></br>
             <p>Email</p>
-            <input id='lname' name="name" value={email} onChange={handleEmailChange} onBlur={handleBlur} ref={emailRef}/>
+            <input id='lname' name="name" onChange={change} onBlur={handleBlur} ref={emailRef}/>
             {error && <h2 style={{color: 'red'}}>{error}</h2>}
             {emailError && <p>Email is invalid</p>}
           </label>
         </fieldset>
 
-        <button id='submit' onclick={handleSubmit} type="submit">Submit</button>
+        <button id='submit' type="submit">Submit</button>
       </form>
       {
         data.fname != undefined && (
