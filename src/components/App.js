@@ -12,6 +12,37 @@ function App() {
  /**
   * code here
   */
+ const [name,setName] = useState('');
+ const [email,setEmail] = useState('');
+ const [emailError,setEmailError] = useState(false);
+
+ const handleNameChange = (event) =>{
+  setName(event.target.value);
+ };
+
+ const handleEmailChange = (event) =>{
+  setEmail(event.target.value);
+ };
+
+ const handleSubmit = (event) =>{
+  event.preventDefault();
+
+  if(emailError){
+    console.log("please fix the error in the form");
+  }
+  else{
+    console.log("form submitted successfully");
+  }
+ };
+
+const validateEmail = () =>{
+  const emailRegex = /^[^\s@]+@[^s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const handleBlur = ()=>{
+  setEmailError(!validateEmail(email));
+};
 
   return(
     <div className="App">
@@ -20,15 +51,16 @@ function App() {
         <fieldset>
           <label>
             <p>First Name</p>
-            <input id='fname' name="name"  ref={fnameRef}/>
+            <input id='fname' name="name" value={name} onChange={handleNameChange} ref={fnameRef}/>
             <br></br>
             <p>Email</p>
-            <input id='lname' name="name"   ref={emailRef}/>
+            <input id='lname' name="name" value={email} onChange={handleEmailChange} onBlur={handleBlur} ref={emailRef}/>
             {error && <h2 style={{color: 'red'}}>{error}</h2>}
+            {emailError && <p>Email is invalid</p>}
           </label>
         </fieldset>
 
-        <button id='submit' type="submit">Submit</button>
+        <button id='submit' onclick={handleSubmit} type="submit">Submit</button>
       </form>
       {
         data.fname != undefined && (
